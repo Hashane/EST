@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "797971888519",
+    "project_id": "est-app-6945b",
+    "storage_bucket": "est-app-6945b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797971888519:android:2205bf47289d10531dfb22",
+        "android_client_info": {
+          "package_name": "com.example.est"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz1DNwFX00MJv1iXuQJnG7VwUz8rgewjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
