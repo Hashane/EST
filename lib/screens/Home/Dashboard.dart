@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:est/themes/theme.dart';
 import 'package:est/screens/LoginScreen.dart';
+import 'package:est/screens/ExpensesScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -65,12 +66,6 @@ class _StatsPageState extends State<Dashboard> {
         "color": Colors.red,
         "label": "Expense",
         "cost": "\$2645.50"
-      },
-      {
-        "icon": Icons.arrow_forward,
-        "color": Colors.red,
-        "label": "Expense",
-        "cost": "\$2645.50"
       }
     ];
     return SingleChildScrollView(
@@ -97,12 +92,86 @@ class _StatsPageState extends State<Dashboard> {
             height: 20,
           ),
           Wrap(
-            spacing: 20,
-            children: [
-              _buildInfoBox("Income", "\$6593.75", CustomTheme.primaryColor),
-              _buildInfoBox("Expense", "\$2645.50", Colors.red),
-             ],
-          ),
+              spacing: 20,
+              children: List.generate(expenses.length, (index) {
+                return GestureDetector(
+                  onTap: () {
+                    if (expenses[index]["label"] == "Income") {
+                      // Navigate to the IncomeDetailsPage
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => IncomeScreen(),
+                      //   ),
+                      // );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ExpensesScreen(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: (size.width - 60) / 2,
+                    height: 170,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.01),
+                            spreadRadius: 10,
+                            blurRadius: 3,
+                            // changes position of shadow
+                          ),
+                        ]),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 25, right: 25, top: 20, bottom: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: expenses[index]['color']),
+                            child: Center(
+                                child: Icon(
+                                  expenses[index]['icon'],
+                                  color: Colors.white,
+                                )),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                expenses[index]['label'],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 13,
+                                    color: Color(0xff67727d)),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                expenses[index]['cost'],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              })),
           SizedBox(
             height: 20,
           ),
@@ -169,67 +238,4 @@ class _StatsPageState extends State<Dashboard> {
       ),
     );
   }
-
-  Widget _buildInfoBox(String label, String cost, Color color) {
-    IconData icon = Icons.arrow_back;
-    Color iconColor = Colors.red;
-
-    if (label == "Income") {
-      icon = Icons.arrow_back;
-      iconColor = Colors.green;
-    } else if (label == "Expense") {
-      icon = Icons.arrow_forward;
-      iconColor = Colors.red;
-    }
-
-    var size = MediaQuery.of(context).size;
-
-    return Container(
-      width: (size.width - 60) / 2,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.01),
-            spreadRadius: 10,
-            blurRadius: 3,
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(
-              icon,
-              color: iconColor,
-              size: 40,
-            ),
-            Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-                color: Color(0xff67727d),
-              ),
-            ),
-            SizedBox(height: 4),
-            FittedBox(
-              child: Text(
-                cost,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
 }
