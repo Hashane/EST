@@ -28,115 +28,194 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: CustomTheme.themeData,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Dashboard',
-            style: const TextStyle(color: Colors.white), // Set app bar text color to white
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-            ),
-          ],
-          automaticallyImplyLeading: false, // Remove the default leading widget (back button)
-        ),
-        backgroundColor: Colors.white,
-        body: Column(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: CustomTheme.primaryColor,
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              color: CustomTheme.primaryColor, // Set background color to red
-              child: const Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: const Text(
-                  'Hello, User!',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white, // Set text color to white
-                  ),
-                ),
-              ),
+            Text(
+              'Good Afternoon',
+              style: TextStyle(color: Colors.white, fontSize: 15),
             ),
-            getBody(),
+            SizedBox(
+                height:
+                8),
+            Text(
+              'Sheron Christeen',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-
-  Widget getBody() {
-    var size = MediaQuery.of(context).size;
-    return Stack(
-      children: [
-        Container(
-          height: 100,
-          decoration: const BoxDecoration(
-            color: CustomTheme.primaryColor,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(80),
-              bottomRight: Radius.circular(80),
-            ),
+        actions: [
+          Row(
+            children: [
+              IconButton(
+                color: Colors.white,
+                icon: const Icon(Icons.notifications_sharp),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+              ),
+              IconButton(
+                color: Colors.white,
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+              ),
+            ],
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            width: double.infinity,
-            height: 200,
-            decoration: BoxDecoration(
-              color: CustomTheme.primaryDarkColor, // Use CustomTheme.primaryColor
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.01),
-                  spreadRadius: 10,
-                  blurRadius: 3,
-                  // changes position of shadow
+        ],
+        automaticallyImplyLeading: false,
+      ),
+      body: Stack(
+//       fit: StackFit.expand,
+        children: [
+          Column(children: [
+            Expanded(
+              flex: 2,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: CustomTheme.primaryColor,
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(20),
+                  ),
                 ),
-              ],
-            ),
-            child: const Padding(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Net balance",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color: Colors.white, // Assuming you want white text on the colored background
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "\$35000.90",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                      color: Colors.white, // Assuming you want white text on the colored background
-                    ),
-                  ),
-                ],
               ),
             ),
-          ),
-        ),
-      ],
+            Expanded(flex: 8, child: Container(color: Colors.white))
+          ]),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.1 - 60,
+            left: 15,
+            right: 15,
+            child: SizedBox(
+              height: 200, // Adjust the height as desired
+              child: Card(
+                color: CustomTheme.primaryDarkColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Total Balance",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Icon(
+                            Icons.more_horiz,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                      Text(
+                        "\$35,000.90",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: CustomTheme.primaryColor,
+                                    radius: 15,
+                                    child: Icon(
+                                      Icons.arrow_downward,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Income",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "\$5,000.00",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: CustomTheme.primaryColor,
+                                    radius: 15,
+                                    child: Icon(
+                                      Icons.arrow_upward,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Expenses",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "\$3,500.00",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
