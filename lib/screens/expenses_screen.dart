@@ -3,8 +3,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:est/json/daily_json.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:est/models/expense_model.dart';
-import 'package:est/services/FirestoreService.dart';
-import 'package:est/services/CommonService.dart';
+import 'package:est/services/firestore_service.dart';
+import 'package:est/services/common_service.dart';
 
 class ExpensesScreen extends StatefulWidget {
   @override
@@ -53,7 +53,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             rangeEndDay: _rangeEnd,
             rangeSelectionMode: RangeSelectionMode.toggledOn,
             onRangeSelected: _onRangeSelected,
-            calendarStyle: CalendarStyle(outsideDaysVisible: true),
+            calendarStyle: const CalendarStyle(outsideDaysVisible: true),
             calendarFormat: _calendarFormat,
             onFormatChanged: (format) {
               setState(() {
@@ -191,8 +191,8 @@ class AddExpenseDialog extends StatefulWidget {
 
 class _AddExpenseDialogState extends State<AddExpenseDialog> {
   DateTime _selectedDate = DateTime.now();
-  TextEditingController _itemNameController = TextEditingController();
-  TextEditingController _amountController = TextEditingController();
+  final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
   String _selectedCategory = '';
 
   @override

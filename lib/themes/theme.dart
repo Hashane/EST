@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class CustomTheme {
   // Define your custom primary and accent colors here
-  static const Color primaryColor = Color(0xFF3498db); // Replace with your color
+  static const Color primaryColor = Color(0xFF429690);// Replace with your color
   static const Color accentColor = Color(0xFF5bc0de);  // Replace with your color
 
-  // Define a whitish background color
-  static const Color backgroundColor = Color(0xFFF3F4F6);
+  static const Color primaryDarkColor = Color(0xFF1B5C58);// Replace with your color
+
 
   // Define text colors
   static const Color textColor = Colors.black; // Text color for dark backgrounds
@@ -18,7 +18,7 @@ class CustomTheme {
     scaffoldBackgroundColor: backgroundColor, // Scaffold background color
     appBarTheme: const AppBarTheme(
       titleTextStyle: TextStyle(fontSize: 20, color: textColor),
-      backgroundColor: Colors.red, // AppBar background color
+      backgroundColor: primaryColor, // AppBar background color
       iconTheme: IconThemeData(color: Colors.white), // AppBar icon color
     ),
     // You can set more properties here, like text themes, fonts, etc.
@@ -30,10 +30,14 @@ class CustomTheme {
       titleLarge: TextStyle(fontSize: 30, color: textColor),
       bodyMedium: TextStyle(fontSize: 16, color: textColor),
       displaySmall: TextStyle(fontSize: 14, color: lightTextColor),
-    ), colorScheme: const ColorScheme.light(
-      primary: primaryColor, // Primary color
-      background: backgroundColor,// Background color
-     secondary: accentColor
+    ),
+    colorScheme: const ColorScheme.light(
+        primary: primaryColor, // Primary color
+        background: backgroundColor,// Background color
+        secondary: accentColor
     ),
   );
+
+  // Define a whitish background color
+  static const Color backgroundColor = Color(0xFFF3F4F6);
 }
