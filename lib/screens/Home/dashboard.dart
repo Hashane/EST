@@ -173,41 +173,61 @@ class _DashboardState extends State<Dashboard> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor: CustomTheme.primaryColor,
-                                    radius: 15,
-                                    child: Icon(
-                                      Icons.arrow_upward,
-                                      color: Colors.white,
+                              GestureDetector(
+                                onTap: () {
+                                  // Handle navigation when the icon or text is clicked
+                                  // You can replace 'YourDestinationScreen()' with your desired destination screen
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => ExpensesScreen(),
                                     ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    "Expenses",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: CustomTheme.primaryColor,
+                                      radius: 15,
+                                      child: Icon(
+                                        Icons.arrow_upward,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(width: 8),
+                                    Text(
+                                      "Expenses",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               SizedBox(height: 4),
-                              Text(
-                                "\$3,500.00",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                              GestureDetector(
+                                onTap: () {
+                                  // Handle navigation when the icon or text is clicked
+                                  // You can replace 'YourDestinationScreen()' with your desired destination screen
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ExpensesScreen()),
+                                  );
+                                },
+                                child: Text(
+                                  "\$3,500.00",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ],
                       ),
-
                     ],
                   ),
                 ),

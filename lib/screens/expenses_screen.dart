@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
-import 'package:est/json/daily_json.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:est/models/expense_model.dart';
-import 'package:est/services/firestore_service.dart';
-import 'package:est/services/common_service.dart';
+import 'package:est/widgets/custom_app_bar.dart';
+import 'package:est/themes/theme.dart';
 
 class ExpensesScreen extends StatefulWidget {
   @override
@@ -12,314 +8,100 @@ class ExpensesScreen extends StatefulWidget {
 }
 
 class _ExpensesScreenState extends State<ExpensesScreen> {
-  CalendarFormat _calendarFormat = CalendarFormat.week;
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay; // Initialize with a default value
-  DateTime? _rangeStart;
-  DateTime? _rangeEnd;
-
-  void _onRangeSelected(
-      DateTime? startDate, DateTime? endDate, DateTime? focusedDay) {
-    setState(() {
-      _selectedDay = null;
-      _focusedDay = _focusedDay;
-      _rangeStart = startDate;
-      _rangeEnd = endDate;
-    });
-  }
+  String _selectedPeriod = 'Monthly'; // Default selected period
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Expenses'),
-      ),
+      backgroundColor: CustomTheme.primaryColor,
+      appBar: CustomAppBar(titleText: 'Expenses'),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2010, 10, 16),
-            lastDay: DateTime.utc(2030, 3, 14),
-            focusedDay: DateTime.now(),
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay; // update `_focusedDay` here as well
-              });
-            },
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            rangeSelectionMode: RangeSelectionMode.toggledOn,
-            onRangeSelected: _onRangeSelected,
-            calendarStyle: const CalendarStyle(outsideDaysVisible: true),
-            calendarFormat: _calendarFormat,
-            onFormatChanged: (format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            },
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-          ),
-          SizedBox(height: 20,),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0), // Adjust the padding as needed
-              child: ListView.builder(
-                itemCount: daily.length,
-                itemBuilder: (context, index) {
-                  final item = daily[index];
-                  return buildExpenseItem(item);
-                },
+            flex: 1,
+            child: Container(
+              color: CustomTheme.primaryColor, // Background color for green container
+            ),
+          ),
+          Expanded(
+            flex: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white, // Adjust color as needed
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(
+                      30.0), // Adjust radius for top left corner
+                  topRight: Radius.circular(
+                      30.0), // Adjust radius for top right corner
+                ),
+              ),
+               // Background color for blue container
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(child:Text(
+                    'Categories',
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 25),
+                  ),
+                  ),
+                  SizedBox(height: 20),
+                  // Period selection
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildPeriodTab('Monthly'),
+                      _buildPeriodTab('Daily'),
+                      _buildPeriodTab('Weekly'),
+                      _buildPeriodTab('Yearly'),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  // Expenses by categories
+                  Container(
+                    height: 200, // Adjust height as needed
+                    child: Placeholder(), // Placeholder for horizontal bars
+                  ),
+                  SizedBox(height: 20),
+                  // Add more content here as needed
+                ],
+              ),
               ),
             ),
           ),
-          // Your other content here
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AddExpenseDialog();
-            },
-          );
+          // Handle FAB press here
         },
         child: Icon(Icons.add),
       ),
     );
   }
 
-  Widget buildExpenseItem(Map<String, dynamic> item) {
-    var size = MediaQuery.of(context).size;
-
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: (size.width - 40) * 0.7,
-              child: Row(
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey.withOpacity(0.1),
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        item['icon'],
-                        width: 30,
-                        height: 30,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Container(
-                    width: (size.width - 90) * 0.5,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item['name'],
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          item['date'],
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black.withOpacity(0.5),
-                            fontWeight: FontWeight.w400,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              width: (size.width - 40) * 0.3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    item['price'],
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 65, top: 8),
-          child: Divider(
-            thickness: 0.8,
-          ),
-        )
-      ],
-    );
-  }
-}
-
-
-class AddExpenseDialog extends StatefulWidget {
-  @override
-  _AddExpenseDialogState createState() => _AddExpenseDialogState();
-}
-
-class _AddExpenseDialogState extends State<AddExpenseDialog> {
-  DateTime _selectedDate = DateTime.now();
-  final TextEditingController _itemNameController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
-  String _selectedCategory = '';
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('Expense'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildDateField(context),
-          SizedBox(height: 10),
-          _buildItemNameField(),
-          SizedBox(height: 10),
-          _buildCategoryDropdown(),
-          SizedBox(height: 10),
-          _buildAmountField(),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
-          },
-          child: Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            // Handle the "Add Expense" button action here
-            // You can access the entered data using _selectedDate, _itemNameController.text, _amountController.text, and _selectedCategory
-            final expense = Expense(
-              expenseID: CommonService().generateUniqueId(), // Generate a unique ID for the expense
-              name : _itemNameController.text,
-            expenseDate: _selectedDate,
-              amount: double.parse(_amountController.text),
-              category: _selectedCategory,
-            );
-
-            // Add the expense to Firestore
-            FirestoreService().addExpense(expense);
-
-            Navigator.of(context).pop(); // Close the dialog
-          },
-          child: Text('Add Expense'),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCategoryDropdown() {
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        labelText: 'Category:',
-        border: OutlineInputBorder(),
-      ),
-      value: _selectedCategory.isNotEmpty ? _selectedCategory : null, // Set an initial value
-      onChanged: (newValue) {
-        setState(() {
-          _selectedCategory = newValue!;
-        });
-      },
-      items: <String>[
-        'Groceries',
-        'Rent',
-        'Utilities',
-        'Transportation',
-        'Entertainment',
-        'Healthcare',
-        'Education',
-        'Others',
-      ].map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildDateField(BuildContext context) {
-    return InkWell(
+  Widget _buildPeriodTab(String period) {
+    return GestureDetector(
       onTap: () {
-        showDatePicker(
-          context: context,
-          initialDate: _selectedDate,
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100),
-        ).then((pickedDate) {
-          if (pickedDate != null && pickedDate != _selectedDate) {
-            setState(() {
-              _selectedDate = pickedDate;
-            });
-          }
+        setState(() {
+          _selectedPeriod = period;
         });
       },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Date:'),
-          Text(
-            '${_selectedDate.toLocal()}'.split(' ')[0],
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: _selectedPeriod == period ? CustomTheme.primaryDarkColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          period,
+          style: TextStyle(
+            color: _selectedPeriod == period ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
           ),
-          Icon(Icons.calendar_today),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildItemNameField() {
-    return TextField(
-      controller: _itemNameController,
-      decoration: InputDecoration(
-        labelText: 'Expense Name:',
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Widget _buildAmountField() {
-    return TextField(
-      controller: _amountController,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: 'Amount (Rs.):',
-        border: OutlineInputBorder(),
+        ),
       ),
     );
   }
