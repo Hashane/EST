@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:est/widgets/custom_app_bar.dart';
 import 'package:est/themes/theme.dart';
+import 'package:est/widgets/common_screen.dart';
 
 class ExpensesScreen extends StatefulWidget {
   @override
@@ -9,76 +10,40 @@ class ExpensesScreen extends StatefulWidget {
 
 class _ExpensesScreenState extends State<ExpensesScreen> {
   String _selectedPeriod = 'Monthly'; // Default selected period
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomTheme.primaryColor,
-      appBar: CustomAppBar(titleText: 'Expenses'),
+    return CommonScreen( // Use CommonScreen widget
+      title: 'Expenses',
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: CustomTheme.primaryColor, // Background color for green container
-            ),
+          Center(child:Text(
+            'Categories',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 25),
           ),
-          Expanded(
-            flex: 20,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white, // Adjust color as needed
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(
-                      30.0), // Adjust radius for top left corner
-                  topRight: Radius.circular(
-                      30.0), // Adjust radius for top right corner
-                ),
-              ),
-               // Background color for blue container
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(child:Text(
-                    'Categories',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 25),
-                  ),
-                  ),
-                  SizedBox(height: 20),
-                  // Period selection
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildPeriodTab('Monthly'),
-                      _buildPeriodTab('Daily'),
-                      _buildPeriodTab('Weekly'),
-                      _buildPeriodTab('Yearly'),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  // Expenses by categories
-                  Container(
-                    height: 200, // Adjust height as needed
-                    child: Placeholder(), // Placeholder for horizontal bars
-                  ),
-                  SizedBox(height: 20),
-                  // Add more content here as needed
-                ],
-              ),
-              ),
-            ),
           ),
+          SizedBox(height: 20),
+          // Period selection
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildPeriodTab('Monthly'),
+              _buildPeriodTab('Daily'),
+              _buildPeriodTab('Weekly'),
+              _buildPeriodTab('Yearly'),
+            ],
+          ),
+          SizedBox(height: 20),
+          // Expenses by categories
+          Container(
+            height: 200, // Adjust height as needed
+            child: Placeholder(), // Placeholder for horizontal bars
+          ),
+          SizedBox(height: 20),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Handle FAB press here
-        },
-        child: Icon(Icons.add),
-      ),
+      onFABPressed: () {
+        // Handle FAB press here
+      },
     );
   }
 
@@ -106,3 +71,4 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     );
   }
 }
+
