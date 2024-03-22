@@ -5,9 +5,9 @@ import 'package:est/themes/theme.dart';
 class CommonScreen extends StatefulWidget {
   final String title;
   final Widget body;
-  final Function()? onFABPressed; // Function for handling FAB press
-
-  CommonScreen({required this.title, required this.body, this.onFABPressed});
+  final Function()? onFABPressed;
+  final bool showBackButton;
+  CommonScreen({required this.title, required this.body, this.onFABPressed, this.showBackButton = false});
 
   @override
   _CommonScreenState createState() => _CommonScreenState();
@@ -18,7 +18,15 @@ class _CommonScreenState extends State<CommonScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomTheme.primaryColor,
-      appBar: CustomAppBar(titleText: widget.title),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+
+        title: Text(
+          widget.title,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -47,7 +55,7 @@ class _CommonScreenState extends State<CommonScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: widget.onFABPressed, // Call the function when FAB is pressed
+        onPressed: widget.onFABPressed,
         child: Icon(Icons.add),
       ),
     );

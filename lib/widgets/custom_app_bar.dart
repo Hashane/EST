@@ -8,29 +8,29 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   CustomAppBar({required this.titleText});
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
-
-  @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: CustomTheme.primaryColor,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
       title: Text(
-            titleText,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
+        titleText,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
       actions: [
         IconButton(
-          color: Colors.white,
-          icon: const Icon(Icons.notifications_sharp),
+          icon: Icon(Icons.exit_to_app), // Example of an action icon
           onPressed: () {
+            // Add your action handling here, for example logout functionality
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
+              MaterialPageRoute(builder: (context) => LoginScreen()), // Navigate to login screen
             );
           },
         ),
       ],
-      automaticallyImplyLeading: false,
     );
   }
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }

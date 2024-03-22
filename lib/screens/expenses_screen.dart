@@ -12,7 +12,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   String _selectedPeriod = 'Monthly'; // Default selected period
   @override
   Widget build(BuildContext context) {
-    return CommonScreen( // Use CommonScreen widget
+    return CommonScreen(
       title: 'Expenses',
       body: Column(
         children: [
@@ -35,7 +35,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           SizedBox(height: 20),
           // Expenses by categories
           Container(
-            height: 200, // Adjust height as needed
+            height: 200,
             child: Placeholder(), // Placeholder for horizontal bars
           ),
           SizedBox(height: 20),
