@@ -14,20 +14,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       title: Text(
         titleText,
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
       ),
       actions: [
         IconButton(
-          icon: Icon(Icons.exit_to_app), // Example of an action icon
+          color: Colors.white,
+          icon: const Icon(Icons.notifications_sharp),
           onPressed: () {
-            // Add your action handling here, for example logout functionality
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LoginScreen()), // Navigate to login screen
+              MaterialPageRoute(builder: (context) => LoginScreen()),
             );
           },
         ),
       ],
+      iconTheme: IconThemeData(color: Colors.white),
     );
   }
 

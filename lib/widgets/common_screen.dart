@@ -18,15 +18,7 @@ class _CommonScreenState extends State<CommonScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomTheme.primaryColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-
-        title: Text(
-          widget.title,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-      ),
+      appBar: CustomAppBar(titleText: "Expenses",),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
