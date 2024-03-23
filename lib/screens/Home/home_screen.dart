@@ -2,6 +2,7 @@ import 'package:est/models/app_user.dart';
 import 'package:est/screens/Home/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:est/screens/trees/trees_screens.dart';
+import 'package:est/screens/employees/employees_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 case 2:
                   return Dashboard();
                 case 3:
-                  return Dashboard();
+                  return EmployeesScreen();
                 default:
                   return Container();
               }
