@@ -176,7 +176,6 @@ class _DashboardState extends State<Dashboard> {
                               GestureDetector(
                                 onTap: () {
                                   // Handle navigation when the icon or text is clicked
-                                  // You can replace 'YourDestinationScreen()' with your desired destination screen
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => ExpensesScreen(),

@@ -1,7 +1,7 @@
 import 'package:est/models/app_user.dart';
 import 'package:est/screens/Home/dashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:est/screens/expenses_screen.dart';
+import 'package:est/screens/trees/trees_screens.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 case 0:
                   return Dashboard();
                 case 1:
-                  return ExpensesScreen();
+                  return TreesScreen();
                 case 2:
                   return Dashboard();
                 case 3:
