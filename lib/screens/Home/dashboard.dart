@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:est/themes/theme.dart';
 import 'package:est/screens/login_screen.dart';
-import 'package:est/screens/expenses_screen.dart';
+import 'package:est/screens/expenses/expenses_screen.dart';
 
 void main() {
   runApp(MyApp());

@@ -1,4 +1,4 @@
-import 'package:est/screens/login_screen.dart';
+import 'package:est/screens/authentication/login_screen.dart';
 import 'package:est/screens/Home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
