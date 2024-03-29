@@ -18,6 +18,7 @@ class _CommonScreenState extends State<CommonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: CustomTheme.primaryColor,
       appBar: CustomAppBar(titleText: widget.title,),
       body: Column(

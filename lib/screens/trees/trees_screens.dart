@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:est/widgets/common_screen.dart';
 import 'package:est/screens/trees/trees_add_screen.dart';
-import 'package:est/widgets/common_screen.dart';
 
 class TreesScreen extends StatefulWidget {
   @override
@@ -45,10 +44,11 @@ class _TreesScreenState extends State<TreesScreen> {
         ],
       ),
       onFABPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => TreesAddModalScreen()
-          ),
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return TreesAddModalScreen();
+          },
         );
       },
     );
