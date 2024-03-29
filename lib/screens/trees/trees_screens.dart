@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:est/widgets/common_screen.dart';
 import 'package:est/screens/trees/trees_add_screen.dart';
+import 'package:est/screens/trees/trees_update_screen.dart';
 
 class TreesScreen extends StatefulWidget {
   @override
@@ -65,7 +66,17 @@ class TreeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return GestureDetector(
+        onTap: () {
+      // Show the modal when the card is tapped
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return TreesUpdateModalScreen(); // Show your modal screen
+        },
+      );
+    },
+    child: Card(
       margin: EdgeInsets.all(16.0),
       child: Container(
         width: 150,
@@ -95,6 +106,7 @@ class TreeCard extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }
