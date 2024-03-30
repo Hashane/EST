@@ -3,6 +3,7 @@ import 'package:est/widgets/custom_app_bar.dart';
 import 'package:est/themes/theme.dart';
 import 'package:est/widgets/common_screen.dart';
 import 'package:est/screens/expenses/expenses_bar_chart_screen.dart';
+import 'package:est/screens/expenses/expenses_category_add_modal.dart';
 
 class ExpensesScreen extends StatefulWidget {
   @override
@@ -49,7 +50,12 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         ],
       ),
       onFABPressed: () {
-        // Handle FAB press here
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return ExpensesCategoryAddModal();
+          },
+        );
       },
     );
   }
