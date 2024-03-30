@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:est/widgets/common_screen.dart';
+import 'package:est/themes/theme.dart';
 import '../../json/daily_json.dart';
 
 class ToolsScreen extends StatefulWidget {
@@ -48,7 +49,24 @@ class _ToolsScreenState extends State<ToolsScreen> {
             rangeEndDay: _rangeEnd,
             rangeSelectionMode: RangeSelectionMode.toggledOn,
             onRangeSelected: _onRangeSelected,
-            calendarStyle: CalendarStyle(outsideDaysVisible: true),
+            calendarStyle: CalendarStyle(
+              // Customize colors here
+              outsideDaysVisible: true,
+              rangeHighlightColor: Colors.green, // Change the color of the range selection highlight
+              todayDecoration: BoxDecoration(
+                color: CustomTheme.primaryDarkColor, // Change the color of the today cell decoration
+                shape: BoxShape.circle,
+              ),
+              rangeStartDecoration: BoxDecoration(
+                color: Colors.orange, // Change the color of the selected cell decoration
+                shape: BoxShape.circle,
+              ),
+              rangeEndDecoration: BoxDecoration(
+                  color: Colors.orange, // Change the color of the selected cell decoration
+                  shape: BoxShape.circle,
+              ),
+              // Add more color customizations as needed
+            ),
             calendarFormat: _calendarFormat,
             onFormatChanged: (format) {
               setState(() {
