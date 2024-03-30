@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Expense {
   final int expenseID;
   final DateTime expenseDate;
@@ -39,5 +41,23 @@ class Expense {
       'treeID': treeID,
       'salaryPaymentID': salaryPaymentID,
     };
+  }
+
+  Future<void> addToFirestore() async {
+    try {
+      // Get Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Convert Expense object to JSON
+      Map<String, dynamic> expenseData = toJson();
+
+      // Add to Firestore
+      await firestore.collection('treeExpenses').add(expenseData);
+
+      print('Expense added to Firestore successfully!');
+    } catch (e) {
+      print('Error adding expense to Firestore: $e');
+      throw e; // Rethrow the error to be handled by the caller
+    }
   }
 }

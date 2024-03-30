@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:est/widgets/common_screen.dart';
+import 'package:est/models/expense_model.dart';
 
 class ExpensesAddModal extends StatelessWidget {
   TextEditingController _nameController = TextEditingController();
@@ -62,7 +63,7 @@ class ExpensesAddModal extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () { _addExpenseToFirestore(context); },
                         child: Text(
                           'Add',
                           style: TextStyle(color: Colors.white),
@@ -91,5 +92,33 @@ class ExpensesAddModal extends StatelessWidget {
   // Helper function to format the date as a string
   String _formatDate(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  // Function to add expense to Firestore
+  void _addExpenseToFirestore(BuildContext context) {
+    // Get data from controllers
+    String name = _nameController.text;
+    double price = double.tryParse(_priceController.text) ?? 0.0;
+
+    // Create an Expense object
+    Expense expense = Expense(
+      expenseID: 0, // You might want to assign an actual ID
+      expenseDate: DateTime.now(),
+      name: name,
+      amount: price,
+      category: 'Your category', // Provide the category as required
+    );
+
+    // Call addToFirestore method
+    expense.addToFirestore().then((_) {
+      // Close the modal
+      Navigator.of(context).pop();
+    }).catchError((error) {
+      // Handle error
+      print('Error adding expense to Firestore: $error');
+    });
+
+    // Close the modal
+    Navigator.of(context).pop();
   }
 }
