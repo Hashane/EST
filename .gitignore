@@ -41,3 +41,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Ignore Firebase configuration files containing API keys
+lib/firebase_options.dart
+
+# Ignore any other files containing API keys or sensitive information
+# Add specific file paths if necessary
+
+# Ignore iOS build artifacts
+/ios/Pods
+/ios/build
+/ios/Podfile.lock
