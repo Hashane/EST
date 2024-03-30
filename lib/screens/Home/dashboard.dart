@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:est/themes/theme.dart';
-import 'package:est/screens/login_screen.dart';
-import 'package:est/screens/expenses_screen.dart';
+import 'package:est/screens/authentication/login_screen.dart';
+import 'package:est/screens/expenses/expenses_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -176,7 +176,6 @@ class _DashboardState extends State<Dashboard> {
                               GestureDetector(
                                 onTap: () {
                                   // Handle navigation when the icon or text is clicked
-                                  // You can replace 'YourDestinationScreen()' with your desired destination screen
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => ExpensesScreen(),

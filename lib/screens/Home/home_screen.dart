@@ -1,7 +1,9 @@
 import 'package:est/models/app_user.dart';
 import 'package:est/screens/Home/dashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:est/screens/expenses_screen.dart';
+import 'package:est/screens/trees/trees_screens.dart';
+import 'package:est/screens/employees/employees_screen.dart';
+import 'package:est/screens/tools/tools_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -44,11 +46,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 case 0:
                   return Dashboard();
                 case 1:
-                  return ExpensesScreen();
+                  return TreesScreen();
                 case 2:
-                  return Dashboard();
+                  return ToolsScreen();
                 case 3:
-                  return Dashboard();
+                  return EmployeesScreen();
                 default:
                   return Container();
               }
@@ -64,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           _buildNavigator(0),

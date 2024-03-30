@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:est/widgets/custom_app_bar.dart';
 import 'package:est/themes/theme.dart';
 import 'package:est/widgets/common_screen.dart';
+import 'package:est/screens/expenses/expenses_bar_chart_screen.dart';
+import 'package:est/screens/expenses/expenses_category_add_modal.dart';
 
 class ExpensesScreen extends StatefulWidget {
   @override
@@ -10,8 +12,14 @@ class ExpensesScreen extends StatefulWidget {
 
 class _ExpensesScreenState extends State<ExpensesScreen> {
   String _selectedPeriod = 'Monthly'; // Default selected period
+
+  final List<double> expenses = [100000, 70000, 30000, 80000];
+  final List<String> categories = ['Trees', 'Utilities', 'Tools', 'Others'];
+
   @override
   Widget build(BuildContext context) {
+    // Get screen dimensions
+    final Size screenSize = MediaQuery.of(context).size;
     return CommonScreen(
       title: 'Expenses',
       body: Column(
@@ -35,14 +43,19 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           SizedBox(height: 20),
           // Expenses by categories
           Container(
-            height: 200,
-            child: Placeholder(), // Placeholder for horizontal bars
+            height: screenSize.height * 0.5 + 60,
+            child:HorizontalBarChart(expenses: expenses, categories: categories),
           ),
           SizedBox(height: 20),
         ],
       ),
       onFABPressed: () {
-        // Handle FAB press here
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return ExpensesCategoryAddModal();
+          },
+        );
       },
     );
   }

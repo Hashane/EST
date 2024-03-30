@@ -7,7 +7,8 @@ class CommonScreen extends StatefulWidget {
   final Widget body;
   final Function()? onFABPressed;
   final bool showBackButton;
-  CommonScreen({required this.title, required this.body, this.onFABPressed, this.showBackButton = false});
+  final bool showFAB;
+  CommonScreen({required this.title, required this.body, this.onFABPressed, this.showBackButton = false,this.showFAB = true});
 
   @override
   _CommonScreenState createState() => _CommonScreenState();
@@ -17,8 +18,9 @@ class _CommonScreenState extends State<CommonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: CustomTheme.primaryColor,
-      appBar: CustomAppBar(titleText: "Expenses",),
+      appBar: CustomAppBar(titleText: widget.title,),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -46,10 +48,12 @@ class _CommonScreenState extends State<CommonScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: widget.showFAB
+          ? FloatingActionButton(
         onPressed: widget.onFABPressed,
         child: Icon(Icons.add),
-      ),
+      )
+          : null,
     );
   }
 }

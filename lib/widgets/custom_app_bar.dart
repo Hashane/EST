@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:est/themes/theme.dart';
-import 'package:est/screens/login_screen.dart';
+import 'package:est/screens/authentication/login_screen.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String titleText;
