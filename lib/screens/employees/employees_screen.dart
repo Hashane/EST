@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:est/widgets/custom_app_bar.dart';
 import 'package:est/themes/theme.dart';
 import 'package:est/widgets/common_screen.dart';
+import 'package:est/screens/employees/employees_add_screen.dart';
 
 class Employee {
   final String name;
@@ -100,20 +101,11 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
         ],
       ),
       onFABPressed: () {
-        // Show modal when FAB is pressed
-        showModalBottomSheet(
+        showDialog(
           context: context,
           builder: (BuildContext context) {
-            // Calculate the desired height as a percentage of the screen height
-            double screenHeight = MediaQuery.of(context).size.height;
-            double desiredHeight = screenHeight * 0.8; // Adjust the percentage as needed
-
-            return CustomBottomSheet(
-              height: desiredHeight,
-              content: UpdateModal(), // Your modal widget
-            );
+            return EmployeesAddModalScreen();
           },
-          isScrollControlled: true, // Enable scroll control
         );
       },
     );
@@ -142,71 +134,6 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-// Your modal widget
-class UpdateModal extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Enter your input',
-              contentPadding: EdgeInsets.all(16.0),
-            ),
-          ),
-          SizedBox(height: 20.0),
-          ElevatedButton(
-            onPressed: () {
-              // Handle update button press
-              Navigator.pop(context); // Close the modal
-            },
-            child: Text('Update'),
-          ),
-          SizedBox(height: 20.0),
-        ],
-      ),
-    );
-  }
-}
-
-// Custom bottom sheet widget with rounded top corners
-class CustomBottomSheet extends StatelessWidget {
-  final Widget content;
-  final double height;
-
-  const CustomBottomSheet({
-    Key? key,
-    required this.content,
-    required this.height,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.0),
-          topRight: Radius.circular(30.0),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 3,
-            blurRadius: 5,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: content,
     );
   }
 }
