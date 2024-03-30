@@ -1,6 +1,9 @@
 import 'package:est/models/app_user.dart';
-import 'package:est/screens/Home/Dashboard.dart';
+import 'package:est/screens/Home/dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:est/screens/trees/trees_screens.dart';
+import 'package:est/screens/employees/employees_screen.dart';
+import 'package:est/screens/tools/tools_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -43,17 +46,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 case 0:
                   return Dashboard();
                 case 1:
-                  return Dashboard();
+                  return TreesScreen();
                 case 2:
-                  return Dashboard();
+                  return ToolsScreen();
                 case 3:
-                  return Dashboard();
+                  return EmployeesScreen();
                 default:
                   return Container();
               }
             },
             // Set the transition duration to zero for instant transitions.
-            transitionDuration: Duration(seconds: 0),
+            transitionDuration: const Duration(seconds: 0),
           );
         },
       ),
@@ -63,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           _buildNavigator(0),
@@ -76,19 +80,19 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+          const BottomNavigationBarItem(
+            icon:  Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.eco),
+          const BottomNavigationBarItem(
+            icon:  Icon(Icons.eco),
             label: 'Trees',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.inventory),
             label: 'Inventory',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.engineering),
             label: 'Workers',
           ),

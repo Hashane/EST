@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.est</string>
+	<string>com.est.mgt</string>
 	<key>PROJECT_ID</key>
 	<string>est-app-6945b</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:797971888519:ios:9b57ad166dbe462e1dfb22</string>
+	<string>1:797971888519:ios:c5988a898bc304ca1dfb22</string>
 </dict>
 </plist>
