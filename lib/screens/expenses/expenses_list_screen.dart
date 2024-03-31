@@ -4,6 +4,9 @@ import 'package:est/widgets/common_screen.dart';
 import 'package:est/themes/theme.dart';
 import 'package:est/screens/expenses/expenses_add_modal.dart';
 import '../../json/daily_json.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:est/models/expense_model.dart';
+import 'package:est/Helper.dart';
 
 class ExpensesListScreen extends StatefulWidget {
   @override
@@ -53,17 +56,21 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
             calendarStyle: CalendarStyle(
               // Customize colors here
               outsideDaysVisible: true,
-              rangeHighlightColor: Colors.green, // Change the color of the range selection highlight
+              rangeHighlightColor: Colors
+                  .green, // Change the color of the range selection highlight
               todayDecoration: BoxDecoration(
-                color: CustomTheme.primaryDarkColor, // Change the color of the today cell decoration
+                color: CustomTheme
+                    .primaryDarkColor, // Change the color of the today cell decoration
                 shape: BoxShape.circle,
               ),
               rangeStartDecoration: BoxDecoration(
-                color: Colors.orange, // Change the color of the selected cell decoration
+                color: Colors
+                    .orange, // Change the color of the selected cell decoration
                 shape: BoxShape.circle,
               ),
               rangeEndDecoration: BoxDecoration(
-                color: Colors.orange, // Change the color of the selected cell decoration
+                color: Colors
+                    .orange, // Change the color of the selected cell decoration
                 shape: BoxShape.circle,
               ),
               // Add more color customizations as needed
@@ -80,16 +87,48 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
           ),
           SizedBox(height: 20),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListView.builder(
-                itemCount: daily.length,
-                itemBuilder: (context, index) {
-                  final item = daily[index];
-                  return buildItem(item);
-                },
-              ),
-            ),
+            child: StreamBuilder(
+              stream: Helper.getExpenses('treeExpenses',startDate: _rangeStart?.toIso8601String(),endDate: _rangeEnd?.toIso8601String()),
+              builder: ((context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.data == null) {
+                  return const SizedBox();
+                }
+
+                if (snapshot.data!.docs.isEmpty) {
+                  return SizedBox(
+                    child: Center(
+                        child: Text(
+                            "No Expenses")),
+                  );
+                }
+
+                if (snapshot.hasData) {
+                  List<Expense> expenses = [];
+
+                  for (var doc in snapshot.data!.docs) {
+                    final expense= Expense.fromJson(
+                        doc.data() as Map<String, dynamic>);
+
+                    expenses.add(expense);
+                  }
+
+                  return ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: expenses.length,
+                        itemBuilder: (context, index) {
+                          final item = expenses[index];
+                          return buildItem(item);
+                        },
+                      );
+                }
+
+                return const SizedBox();
+              }),
+            )
           ),
         ],
       ),
@@ -104,7 +143,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
     );
   }
 
-  Widget buildItem(Map<String, dynamic> item) {
+  Widget buildItem(Expense item) {
     var size = MediaQuery.of(context).size;
 
     return Column(
@@ -121,7 +160,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item['name'],
+                          item.name,
                           style: TextStyle(
                             fontSize: 15,
                             color: Colors.black,
@@ -131,7 +170,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                         ),
                         SizedBox(height: 5),
                         Text(
-                          item['date'],
+                          item.expenseDate.toString(),
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.black.withOpacity(0.5),
@@ -151,7 +190,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    item['price'],
+                    item.amount.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
