@@ -30,7 +30,7 @@ class Helper {
     return query.snapshots();
   }
 
-  static Future<void> addToFirestoreAndUpdateTotal(String collectionName, Map<String, dynamic> expenseData, double price) async {
+  static Future<void> addToFirestoreAndUpdateTotal(String collectionName, Map<String, dynamic> expenseData) async {
     try {
       // Get Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -39,7 +39,7 @@ class Helper {
       DocumentReference docRef = await firestore.collection(collectionName).add(expenseData);
 
       // Update the total expense
-      await updateTotalExpense(collectionName,price);
+      await updateTotalExpense(collectionName,expenseData);
 
       print('Expense added to Firestore successfully with ID: ${docRef.id}');
     } catch (e) {
@@ -52,14 +52,32 @@ class Helper {
    * This method is used to keep track of total
    * of each expense category
    */
-  static Future<void> updateTotalExpense(String collectionName, double newExpenseAmount) async {
+  static Future<void> updateTotalExpense(String collectionName, Map<String, dynamic> expenseData) async {
     try {
+
+      double newExpenseAmount = double.tryParse(expenseData['amount'].toString()) ?? 0.0;
+
+      String dateString = expenseData['expenseDate'];
+      DateTime expenseDate = DateTime.parse(dateString);
+
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       CollectionReference expenseTotalRef = firestore.collection('totalExpenses');
-      DocumentReference totalRef = expenseTotalRef.doc(collectionName);
+
+      final year = expenseDate.year;
+      final month = expenseDate.month;
+
+      DocumentReference yearlyTotalRef = expenseTotalRef.doc(collectionName).collection(year.toString()).doc('yearly');
+      DocumentReference monthlyTotalRef = expenseTotalRef.doc(collectionName).collection(year.toString()).doc('monthly_$month');
+
+      // Calculate week number
+      final firstJan = DateTime(expenseDate.year, 1, 1);
+      final weekNumber = Helper().weeksBetween(firstJan, expenseDate);
+
+      // Construct weekly total reference using the week number
+      DocumentReference weeklyTotalRef = expenseTotalRef.doc(collectionName).collection(year.toString()).doc('weekly_${weekNumber.toString()}');
 
       // Get current total expense
-      DocumentSnapshot totalSnapshot = await totalRef.get();
+      DocumentSnapshot totalSnapshot = await yearlyTotalRef.get();
       double currentTotal = totalSnapshot.exists ?
       double.tryParse((totalSnapshot.data() as Map<String, dynamic>)['total'].toString()) ?? 0.0 :
       0.0;
@@ -67,13 +85,36 @@ class Helper {
       // Update total
       double updatedTotal = currentTotal + newExpenseAmount;
 
-      // Save updated total
-      await totalRef.set({'total': updatedTotal});
+      // Save updated total for yearly
+      await yearlyTotalRef.set({'total': updatedTotal});
+
+      // Save updated total for monthly
+      DocumentSnapshot monthlySnapshot = await monthlyTotalRef.get();
+      double currentMonthlyTotal = monthlySnapshot.exists ?
+      double.tryParse((monthlySnapshot.data() as Map<String, dynamic>)['total'].toString()) ?? 0.0 :
+      0.0;
+      double updatedMonthlyTotal = currentMonthlyTotal + newExpenseAmount;
+      await monthlyTotalRef.set({'total': updatedMonthlyTotal});
+
+      // Save updated total for weekly
+      DocumentSnapshot weeklySnapshot = await weeklyTotalRef.get();
+      double currentWeeklyTotal = weeklySnapshot.exists ?
+      double.tryParse((weeklySnapshot.data() as Map<String, dynamic>)['total'].toString()) ?? 0.0 :
+      0.0;
+      double updatedWeeklyTotal = currentWeeklyTotal + newExpenseAmount;
+      Map<String, dynamic> weeklyData = {'total': updatedWeeklyTotal};
+      await weeklyTotalRef.set(weeklyData);
 
       print('Total expense updated successfully!');
     } catch (e) {
       print('Error updating total expense: $e');
       throw e;
     }
+  }
+
+  int weeksBetween(DateTime from, DateTime to) {
+    from = DateTime.utc(from.year, from.month, from.day);
+    to = DateTime.utc(to.year, to.month, to.day);
+    return (to.difference(from).inDays / 7).ceil();
   }
 }

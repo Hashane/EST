@@ -144,7 +144,7 @@ class ExpensesAddModal extends StatelessWidget {
     );
 
     // Call the global helper method to add the expense and update total
-    await Helper.addToFirestoreAndUpdateTotal('treeExpenses', expense.toJson(),price);
+    await Helper.addToFirestoreAndUpdateTotal('treeExpenses', expense.toJson());
 
     // Close the modal
     Navigator.of(context).pop();
