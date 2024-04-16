@@ -13,7 +13,7 @@ class HorizontalBarChart extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ExpensesListScreen(),
+            builder: (context) => ExpensesListScreen(collectionName: 'treeExpenses'),
           ),
         );
       },

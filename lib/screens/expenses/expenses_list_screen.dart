@@ -9,6 +9,9 @@ import 'package:est/models/expense_model.dart';
 import 'package:est/Helper.dart';
 
 class ExpensesListScreen extends StatefulWidget {
+  final String collectionName;
+
+  ExpensesListScreen({required this.collectionName});
   @override
   _ExpensesListScreenState createState() => _ExpensesListScreenState();
 }
@@ -90,7 +93,7 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
           Expanded(
           child: SingleChildScrollView(
             child: StreamBuilder(
-              stream: Helper.getExpenses('treeExpenses',startDate: _rangeStart?.toIso8601String(),endDate: _rangeEnd?.toIso8601String()),
+              stream: Helper.getExpenses(widget.collectionName,startDate: _rangeStart?.toIso8601String(),endDate: _rangeEnd?.toIso8601String()),
               builder: ((context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
