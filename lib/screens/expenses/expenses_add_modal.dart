@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:est/widgets/common_screen.dart';
+import 'package:est/models/expense_model.dart';
+import 'package:est/Helper.dart';
 
 class ExpensesAddModal extends StatelessWidget {
   TextEditingController _nameController = TextEditingController();
@@ -21,7 +23,7 @@ class ExpensesAddModal extends StatelessWidget {
       title: Text('Add Expense'),
       content: Container(
         width: screenSize.width * 0.8,
-        height: screenSize.height * 0.3,
+        height: screenSize.height * 0.4,
         child: Column(
           children: [
             Expanded(
@@ -29,6 +31,37 @@ class ExpensesAddModal extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: _dateController,
+                        readOnly: true, // Make the text field read-only
+                        onTap: () async {
+                          // Show date picker when the text field is tapped
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime.now(),
+                          );
+
+                          if (pickedDate != null) {
+                            // Update the text field with the selected date
+                            _dateController.text = _formatDate(pickedDate); // Format the date
+                          }
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Date',
+                          enabledBorder: const OutlineInputBorder(
+                            // width: 0.0 produces a thin "hairline" border
+                            borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                          ),
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(
+                              Icons.calendar_today), // Add icon to indicate date picker
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextField(
@@ -62,7 +95,7 @@ class ExpensesAddModal extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () { _addExpenseToFirestore(context); },
                         child: Text(
                           'Add',
                           style: TextStyle(color: Colors.white),
@@ -91,5 +124,30 @@ class ExpensesAddModal extends StatelessWidget {
   // Helper function to format the date as a string
   String _formatDate(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+
+  // Function to add expense to Firestore
+  void _addExpenseToFirestore(BuildContext context) async{
+    // Get data from controllers
+    DateTime date = DateTime.parse(_dateController.text);
+    String name = _nameController.text;
+    double price = double.tryParse(_priceController.text) ?? 0.0;
+
+    // Create an Expense object
+    Expense expense = Expense(
+      expenseID: DateTime.now().millisecondsSinceEpoch,
+      expenseDate: date,
+      name: name,
+      amount: price,
+      category: 'Sample',
+    );
+
+    // Call the global helper method to add the expense and update total
+    await Helper.addToFirestoreAndUpdateTotal('treeExpenses', expense.toJson());
+
+    // Close the modal
+    Navigator.of(context).pop();
+
   }
 }

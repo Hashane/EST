@@ -4,13 +4,20 @@ import 'package:est/widgets/common_screen.dart';
 import 'package:est/themes/theme.dart';
 import 'package:est/screens/expenses/expenses_add_modal.dart';
 import '../../json/daily_json.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:est/models/expense_model.dart';
+import 'package:est/Helper.dart';
 
 class ExpensesListScreen extends StatefulWidget {
+  final String collectionName;
+
+  ExpensesListScreen({required this.collectionName});
   @override
   _ExpensesListScreenState createState() => _ExpensesListScreenState();
 }
 
 class _ExpensesListScreenState extends State<ExpensesListScreen> {
+  List<Expense> expenses = [];
   CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay; // Initialize with a default value
@@ -53,17 +60,21 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
             calendarStyle: CalendarStyle(
               // Customize colors here
               outsideDaysVisible: true,
-              rangeHighlightColor: Colors.green, // Change the color of the range selection highlight
+              rangeHighlightColor: Colors
+                  .green, // Change the color of the range selection highlight
               todayDecoration: BoxDecoration(
-                color: CustomTheme.primaryDarkColor, // Change the color of the today cell decoration
+                color: CustomTheme
+                    .primaryDarkColor, // Change the color of the today cell decoration
                 shape: BoxShape.circle,
               ),
               rangeStartDecoration: BoxDecoration(
-                color: Colors.orange, // Change the color of the selected cell decoration
+                color: Colors
+                    .orange, // Change the color of the selected cell decoration
                 shape: BoxShape.circle,
               ),
               rangeEndDecoration: BoxDecoration(
-                color: Colors.orange, // Change the color of the selected cell decoration
+                color: Colors
+                    .orange, // Change the color of the selected cell decoration
                 shape: BoxShape.circle,
               ),
               // Add more color customizations as needed
@@ -80,16 +91,52 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
           ),
           SizedBox(height: 20),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListView.builder(
-                itemCount: daily.length,
-                itemBuilder: (context, index) {
-                  final item = daily[index];
-                  return buildItem(item);
-                },
-              ),
+          child: SingleChildScrollView(
+            child: StreamBuilder(
+              stream: Helper.getExpenses(widget.collectionName,startDate: _rangeStart?.toIso8601String(),endDate: _rangeEnd?.toIso8601String()),
+              builder: ((context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.data == null) {
+                  return const SizedBox();
+                }
+
+                if (snapshot.data!.docs.isEmpty) {
+                  return SizedBox(
+                    child: Center(
+                        child: Text(
+                            "No Expenses")),
+                  );
+                }
+
+                if (snapshot.hasData) {
+                  // Clear the expenses list before adding new items
+                  expenses.clear();
+
+                  for (var doc in snapshot.data!.docs) {
+                    final expense= Expense.fromJson(
+                        doc.data() as Map<String, dynamic>);
+
+                    expenses.add(expense);
+                  }
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: expenses.length,
+                        itemBuilder: (context, index) {
+                          final item = expenses[index];
+                          return buildItem(item);
+                        },
+                      );
+                }
+
+                return const SizedBox();
+              }),
             ),
+    )
           ),
         ],
       ),
@@ -104,73 +151,134 @@ class _ExpensesListScreenState extends State<ExpensesListScreen> {
     );
   }
 
-  Widget buildItem(Map<String, dynamic> item) {
+  Widget buildItem(Expense item) {
     var size = MediaQuery.of(context).size;
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              child: Row(
-                children: [
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item['name'],
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          item['date'],
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black.withOpacity(0.5),
-                            fontWeight: FontWeight.w400,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+    return Dismissible(
+      key: UniqueKey(), // Use UniqueKey for each item
+      direction: DismissDirection.endToStart, // Swipe direction
+      background: Container(
+        color: Colors.red, // Background color when swiping
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Icon(Icons.delete, color: Colors.white),
+      ),
+      confirmDismiss: (direction) async {
+        // Show a confirmation dialog if needed
+        return await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Delete Item"),
+              content: Text("Are you sure you want to delete this item?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text("Delete"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      onDismissed: (direction) async {
+        try {
+
+          Expense.deleteExpenseFromFirestore(item.expenseID);
+          // If the deletion is successful, update the UI by removing the item from the list
+          setState(() {
+            // Remove the item from your list of expenses
+            expenses.remove(item);
+          });
+
+          // Show a snackbar to indicate successful deletion
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Expense deleted successfully"),
             ),
-            Container(
-              width: (size.width - 40) * 0.3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    item['price'],
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
+          );
+        } catch (e) {
+          // If an error occurs during deletion, show an error message
+          print("Error deleting expense: $e");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Failed to delete expense"),
+            ),
+          );
+        }
+      },
+
+      child: Column(
+        children: [
+          // Your existing list item UI here
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                child: Row(
+                  children: [
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.name,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            item.expenseDate.toString(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black.withOpacity(0.5),
+                              fontWeight: FontWeight.w400,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
-            )
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Divider(
-            color: Colors.grey,
-            thickness: 0.8,
+              Container(
+                width: (size.width - 40) * 0.3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      item.amount.toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Divider(
+              color: Colors.grey,
+              thickness: 0.8,
+            ),
+          )
+        ],
+      ),
     );
   }
+
 }
